@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongo:
+    image: mongo:7.0
+    container_name: loop-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  # Backend Express API
+  api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: loop-api
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - '5000:5000'
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017/loop
+      CLIENT_URL: http://localhost:5173
+      JWT_SECRET: super-secret-loop-jwt-key-minimum-32-characters-long
+      JWT_EXPIRES_IN: 7d
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-3-5-sonnet-20241022}
+
+volumes:
+  mongo-data:

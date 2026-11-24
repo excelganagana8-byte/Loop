@@ -1,0 +1,64 @@
+export const ROLES = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
+};
+
+export const ROLE_LIST = Object.values(ROLES);
+
+export const FEEDBACK_SOURCES = {
+  APP_REVIEW: 'APP_REVIEW',
+  SUPPORT_TICKET: 'SUPPORT_TICKET',
+  SURVEY: 'SURVEY',
+  SALES_NOTE: 'SALES_NOTE',
+  OTHER: 'OTHER'
+};
+
+export const FEEDBACK_SOURCE_LIST = Object.values(FEEDBACK_SOURCES);
+
+export const FEEDBACK_STATUS = {
+  NEW: 'NEW',
+  IN_REVIEW: 'IN_REVIEW',
+  RESOLVED: 'RESOLVED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export const FEEDBACK_STATUS_LIST = Object.values(FEEDBACK_STATUS);
+
+export const AI_SENTIMENTS = {
+  POSITIVE: 'POSITIVE',
+  NEGATIVE: 'NEGATIVE',
+  NEUTRAL: 'NEUTRAL',
+  UNKNOWN: 'UNKNOWN'
+};
+
+export const AI_SENTIMENT_LIST = Object.values(AI_SENTIMENTS);
+
+export const AI_CATEGORIES = {
+  BUG: 'BUG',
+  FEATURE_REQUEST: 'FEATURE_REQUEST',
+  PRICING: 'PRICING',
+  USABILITY: 'USABILITY',
+  CUSTOMER_SUPPORT: 'CUSTOMER_SUPPORT',
+  PERFORMANCE: 'PERFORMANCE',
+  PRAISE: 'PRAISE',
+  OTHER: 'OTHER'
+};
+
+export const AI_CATEGORY_LIST = Object.values(AI_CATEGORIES);
+
+export const AI_STATUS = {
+  PENDING: 'PENDING',
+  DONE: 'DONE',
+  FAILED: 'FAILED'
+};
+
+export const AI_STATUS_LIST = Object.values(AI_STATUS);
+
+export const INSIGHT_TYPES = {
+  THEME: 'THEME',
+  TREND: 'TREND',
+  RECOMMENDATION: 'RECOMMENDATION'
+};
+
+export const INSIGHT_TYPE_LIST = Object.values(INSIGHT_TYPES);
