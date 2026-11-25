@@ -20,17 +20,37 @@ export const createApp = () => {
   app.use(helmet());
 
   // CORS setup
+  const configuredOrigins = (env.CLIENT_URL || '')
+    .split(',')
+    .map(url => url.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
+
   app.use(cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, postman) or matching CLIENT_URL
-      if (!origin || origin === env.CLIENT_URL || env.NODE_ENV !== 'production') {
+      // Allow requests with no origin (like mobile apps, curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      const cleanOrigin = origin.replace(/\/+$/, '');
+
+      // Check if origin is allowed
+      const isConfigured = configuredOrigins.includes(cleanOrigin);
+      const isLocalhost = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin);
+      const isVercel = /^https:\/\/.*\.vercel\.app$/.test(cleanOrigin);
+      const isDev = env.NODE_ENV !== 'production';
+
+      if (isConfigured || isLocalhost || isVercel || isDev) {
         callback(null, true);
       } else {
-        callback(new Error('Blocked by CORS policy'));
+        callback(null, false);
       }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
   }));
+
+  // Explicit preflight handling
+  app.options('*', cors());
 
   // Logging
   if (env.NODE_ENV !== 'test') {
@@ -42,23 +62,38 @@ export const createApp = () => {
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
   // Health check endpoint
-  app.get('/api/health', (req, res) => {
+  const sendHealth = (req, res) => {
     return sendSuccess(res, {
       status: 'healthy',
       service: 'loop-api',
       timestamp: new Date().toISOString(),
       environment: env.NODE_ENV
     });
-  });
+  };
+  app.get('/api/health', sendHealth);
+  app.get('/health', sendHealth);
 
-  // API Routes
+  // API Routes (mounted at /api and root paths for resilience)
   app.use('/api/auth', authRoutes);
+  app.use('/auth', authRoutes);
+
   app.use('/api/workspaces', workspaceRoutes);
+  app.use('/workspaces', workspaceRoutes);
+
   app.use('/api/feedback', feedbackRoutes);
+  app.use('/feedback', feedbackRoutes);
+
   app.use('/api/ai', aiRoutes);
+  app.use('/ai', aiRoutes);
+
   app.use('/api/analytics', analyticsRoutes);
+  app.use('/analytics', analyticsRoutes);
+
   app.use('/api/insights', insightRoutes);
+  app.use('/insights', insightRoutes);
+
   app.use('/api/ask', askRoutes);
+  app.use('/ask', askRoutes);
 
   // Catch-all 404 handler for unhandled routes
   app.use((req, res) => {
