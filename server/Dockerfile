@@ -9,7 +9,7 @@ COPY shared ./shared
 COPY server ./server
 
 # Install dependencies
-RUN npm install
+RUN npm install --omit=dev
 
 EXPOSE 5000
 

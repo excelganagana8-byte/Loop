@@ -46,12 +46,26 @@ This guide covers deploying the **LOOP** platform to production using **MongoDB 
 ## 2. Backend API: Render or Railway
 
 ### Deploying on Render:
-1. Create a **New Web Service** connected to your Git repository.
-2. Set configuration:
-   - **Root Directory**: `server`
-   - **Environment**: `Node`
+
+#### Option A: 1-Click Blueprint (Recommended)
+1. In Render, select **New** → **Blueprint**.
+2. Connect your repository. Render automatically reads [render.yaml](file:///c:/Users/USER/Desktop/project-loop/render.yaml) and provisions both the API service and the client static site with proper workspace commands.
+
+#### Option B: Manual Web Service (Node Runtime)
+1. Select **New** → **Web Service** and connect your repository.
+2. Configuration:
+   - **Root Directory**: Leave **BLANK** (or `.`) — *Do NOT set to `server`, because this is a monorepo that requires `shared/` and root manifests.*
+   - **Runtime**: `Node`
    - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
+   - **Start Command**: `npm run start --workspace=server`
+
+#### Option C: Manual Web Service (Docker Runtime)
+1. Select **New** → **Web Service** and connect your repository.
+2. Configuration:
+   - **Root Directory**: Leave **BLANK** (or `.`)
+   - **Runtime**: `Docker`
+   - **Dockerfile Path**: `Dockerfile` (or `server/Dockerfile`)
+   - **Docker Context**: `.`
 3. Configure Environment Variables in Render Dashboard:
    | Variable | Value | Description |
    |---|---|---|
